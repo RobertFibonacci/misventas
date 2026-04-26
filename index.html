@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas de Venta Estratégicos | High Ticket</title>
+    
+    <!-- Tailwind CSS con soporte para Dark Mode manual -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+        
+        // Script preventivo para evitar el "Flasheo" de colores al recargar
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; 
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        /* Fondo base Día/Noche */
+        html:not(.dark) body { background-color: #f9f9f9; color: #000000; }
+        html.dark body { background-color: #000000; color: #ffffff; }
+        
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Canvas para las estrellas */
+        #star-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Glassmorphism Adaptable Día/Noche */
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.5s ease;
+        }
+        html:not(.dark) .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        html.dark .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        html:not(.dark) .glass-panel:hover { border-color: rgba(0, 0, 0, 0.15); }
+        html.dark .glass-panel:hover { border-color: rgba(255, 255, 255, 0.2); }
+
+        /* Estilos del Zig Zag Adaptable */
+        @keyframes pulse-border-white {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        @keyframes pulse-border-black {
+            0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+        }
+        
+        .node-active { opacity: 1 !important; }
+        html:not(.dark) .node-active.icon-bg {
+            background-color: #000000 !important;
+            border-color: #000000 !important;
+            color: #ffffff !important;
+            animation: pulse-border-black 1.5s infinite;
+        }
+        html.dark .node-active.icon-bg {
+            background-color: #ffffff !important;
+            border-color: #ffffff !important;
+            color: #000000 !important;
+            animation: pulse-border-white 1.5s infinite;
+        }
+        
+        html:not(.dark) .node-active-text { opacity: 1 !important; color: #000000 !important; }
+        html.dark .node-active-text { opacity: 1 !important; color: #ffffff !important; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .accordion-content {
+            transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease, padding 0.7s ease;
+        }
+        .accordion-content.open {
+            max-height: 500px;
+            opacity: 1;
+            padding-bottom: 1.5rem;
+        }
+        .accordion-icon {
+            transition: transform 0.4s ease;
+        }
+        .accordion-icon.open {
+            transform: rotate(180deg);
+        }
+
+        /* ANIMACIÓN DEL ESCUDO (Solo brillo tenue) */
+        @keyframes shield-glow-dark {
+            0% { filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.2)); }
+            50% { filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7)); }
+            100% { filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.2)); }
+        }
+        @keyframes shield-glow-light {
+            0% { filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.1)); }
+            50% { filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4)); }
+            100% { filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.1)); }
+        }
+        html.dark .animate-shield { animation: shield-glow-dark 3s infinite ease-in-out; }
+        html:not(.dark) .animate-shield { animation: shield-glow-light 3s infinite ease-in-out; }
+
+        .profile-expandable {
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+        }
+
+        /* Estrellas Internas Tarjeta Perfil */
+        .card-stars-dark {
+            background-image: 
+                radial-gradient(1.5px 1.5px at 15% 25%, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 75% 75%, rgba(255,255,255,0.8), transparent);
+            animation: pulse-card-stars 3s infinite alternate ease-in-out;
+        }
+        .card-stars-light {
+            background-image: 
+                radial-gradient(1.5px 1.5px at 15% 25%, rgba(0,0,0,0.8), transparent),
+                radial-gradient(1px 1px at 85% 15%, rgba(0,0,0,0.5), transparent),
+                radial-gradient(2px 2px at 75% 75%, rgba(0,0,0,0.7), transparent);
+            animation: pulse-card-stars 3s infinite alternate ease-in-out;
+        }
+        @keyframes pulse-card-stars {
+            0% { opacity: 0.2; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Degradado en el texto de Perfil (Nombre) */
+        .name-static-gradient {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        html.dark .name-static-gradient { background-image: linear-gradient(to right, #ffffff 0%, #ffffff 50%, #777777 100%); }
+        html:not(.dark) .name-static-gradient { background-image: linear-gradient(to right, #000000 0%, #000000 50%, #888888 100%); }
+
+        /* =========================================
+           NUEVO: ESTILOS PARA EL CARRUSEL "EL CAOS"
+           ========================================= */
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: zoom-in; /* Cursor de lupa */
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); /* Transición suave */
+            height: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Para contener la imagen cuando se amplíe */
+        }
+
+        .carousel-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: transform 0.4s ease-out; /* Transición suave para el zoom */
+            transform-origin: center center;
+        }
+
+        /* Efecto Lupa (Hover/Touch) */
+        .carousel-container:hover .carousel-img,
+        .carousel-container:active .carousel-img {
+            transform: scale(1.4); /* Ajusta este valor (1.5, 2.0, etc.) para más o menos zoom */
+        }
+
+        /* Indicadores (puntitos) */
+        .carousel-indicators {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+            pointer-events: none; /* Que el zoom funcione a través de los puntos */
+        }
+
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: background-color 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .indicator-dot.active {
+            background-color: rgba(255, 255, 255, 1);
+            transform: scale(1.2);
+        }
+
+        /* Texto Dinámico */
+        .dynamic-text-container {
+            min-height: 48px; /* Evita saltos de altura si los textos son de diferente largo */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+
+    </style>
+</head>
+<body class="antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+
+    <!-- FONDOS -->
+    <canvas id="star-canvas"></canvas>
+
+    <!-- ENCABEZADO STICKY COMPLETO (Todo en 1 sola línea) -->
+    <header class="sticky top-0 z-50 w-full transition-all duration-500 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-black/10 dark:border-white/10">
+        
+        <div class="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between w-full">
+            
+            <!-- Izquierda: Logo RF. -->
+            <div class="w-1/3 flex justify-start items-center">
+                <a href="#" class="text-xl font-bold tracking-widest uppercase font-sans text-gray-800 dark:text-gray-200 hover:text-black dark:hover:text-white transition-colors">RF.</a>
+            </div>
+            
+            <!-- Centro: Pestaña VERIFIED STRATEGY -->
+            <div class="w-1/3 flex justify-center">
+                <button id="profile-btn" class="bg-transparent border border-black/20 dark:border-white/20 rounded-full px-3 py-1.5 flex justify-center items-center gap-1.5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer outline-none group whitespace-nowrap">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-black dark:text-white animate-shield"></i> 
+                    <span class="text-black dark:text-white/90 font-mono text-[9px] md:text-[10px] tracking-widest uppercase font-bold group-hover:text-black dark:group-hover:text-white transition-colors">
+                        VERIFIED STRATEGY
+                    </span>
+                    <i data-lucide="chevron-down" id="profile-chevron" class="w-3.5 h-3.5 text-black dark:text-white transition-transform duration-300"></i>
+                </button>
+            </div>
+
+            <!-- Derecha: Iconos y Menú -->
+            <div class="w-1/3 flex justify-end items-center gap-4 md:gap-8">
+                <div class="hidden md:flex space-x-8 text-sm tracking-wide text-gray-500 dark:text-gray-400">
+                    <a href="#prueba-social" class="hover:text-black dark:hover:text-white transition-colors">Realidad</a>
+                    <a href="#acordeones" class="hover:text-black dark:hover:text-white transition-colors">Fugas</a>
+                    <a href="#lead-magnet" class="font-semibold text-black dark:text-white hover:opacity-70 transition-opacity">Diagnóstico</a>
+                </div>
+                
+                <!-- Botón Día / Noche -->
+                <button id="theme-toggle" class="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors outline-none flex-shrink-0" title="Cambiar Tema">
+                    <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
+                    <i data-lucide="moon" id="icon-moon" class="w-5 h-5 hidden"></i>
+                </button>
+
+                <button class="md:hidden text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white flex-shrink-0">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Panel de Contenido Expandible (Posición Absoluta para flotar) -->
+        <div id="profile-panel" class="profile-expandable max-h-0 opacity-0 w-full flex justify-center overflow-hidden transition-all duration-500 absolute top-full left-0 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 shadow-2xl z-40">
+            <div class="w-full max-w-[420px] px-4 py-4 md:py-6">
+                <!-- Tarjeta ID -->
+                <div class="bg-white dark:bg-black border border-black/10 dark:border-white/10 rounded-[1.5rem] shadow-xl p-5 transition-colors duration-500 relative overflow-hidden">
+                    <div class="absolute inset-0 z-0 card-stars-light dark:hidden pointer-events-none"></div>
+                    <div class="absolute inset-0 z-0 card-stars-dark hidden dark:block pointer-events-none"></div>
+                    
+                    <div class="relative z-10">
+                        <!-- Header de la Tarjeta -->
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-[68px] h-[68px] rounded-full overflow-hidden bg-gray-200 dark:bg-black flex-shrink-0 border border-black/10 dark:border-white/10">
+                                <img src="https://via.placeholder.com/150/000000/ffffff?text=RF" alt="Roberto Fibonacci" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <h2 class="text-xl font-bold tracking-tight leading-tight mb-1.5 transition-colors name-static-gradient">Roberto Fibonacci</h2>
+                                <div class="flex items-center gap-3 text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-1 transition-colors">
+                                    <div class="flex items-center gap-1.5"><i data-lucide="briefcase" class="w-3.5 h-3.5"></i> Founder de Prospecta</div>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium transition-colors">
+                                    <i data-lucide="mail" class="w-3.5 h-3.5"></i> hola@robertofibonacci.com
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5 bg-gray-50 dark:bg-white/5 border border-black/5 dark:border-white/5 px-3 py-2 rounded-xl transition-colors">
+                            <p class="text-[11px] text-gray-700 dark:text-gray-300 leading-relaxed">Estratega de Ventas especializado en modelos <span class="text-black dark:text-white font-bold">High Ticket</span>.</p>
+                        </div>
+                        
+                        <!-- Redes Sociales -->
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <a href="https://instagram.com/rober_fibonacci" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
+                                <i data-lucide="instagram" class="w-4 h-4 flex-shrink-0"></i>
+                                <span class="text-[11px] font-medium truncate">@RoberFibonacci</span>
+                            </a>
+                            <a href="https://tiktok.com/@roberfobonacci" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
+                                <i data-lucide="video" class="w-4 h-4 flex-shrink-0"></i>
+                                <span class="text-[11px] font-medium truncate">@RoberFibonacci</span>
+                            </a>
+                            <a href="https://youtube.com/@ProspectaMx" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
+                                <i data-lucide="youtube" class="w-4 h-4 flex-shrink-0"></i>
+                                <span class="text-[11px] font-medium truncate">@ProspectaMx</span>
+                            </a>
+                            <a href="https://wa.me/524425480329" target="_blank" class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
+                                <i data-lucide="message-circle" class="w-4 h-4 flex-shrink-0"></i>
+                                <span class="text-[11px] font-medium truncate">+52 442 548 0329</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         BLOQUE 1: HERO
+         ========================================== -->
+    <section class="relative pt-6 md:pt-12 pb-8 md:pb-12 z-0">
+        <div class="max-w-6xl mx-auto px-6 w-full">
+            <div class="max-w-4xl text-left">
+                <h1 class="text-4xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight text-black dark:text-white transition-colors">
+                    El mayor problema de tu negocio no es tu producto, es operar a ciegas y sin un mapa.
+                </h1>
+                <p class="text-[15px] md:text-lg text-gray-500 dark:text-gray-400 max-w-3xl font-light leading-relaxed mb-6 md:mb-8 border-l-2 border-black/20 dark:border-white/20 pl-4 transition-colors">
+                    Salir al mercado sin estructura satura tu tiempo con curiosos y hace que pierdas tus mejores ventas. Nosotros instalamos el ecosistema completo: estandarizamos tu mensaje, filtramos con IA y te damos la ruta para cerrar. 
+                    <strong class="text-black dark:text-white font-medium block mt-2">Tú solo hablas con quien tiene la tarjeta en la mano.</strong>
+                </p>
+                <a href="#lead-magnet" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-black text-white dark:bg-white dark:text-black text-[15px] md:text-lg font-bold rounded-full hover:scale-105 transition-transform duration-300 shadow-xl dark:shadow-[0_0_20px_rgba(255,255,255,0.15)] w-full md:w-auto">
+                    Realizar mi Diagnóstico Gratuito
+                    <i data-lucide="arrow-down-circle" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         BLOQUE 2: PRUEBA SOCIAL (CARRUSEL vs ECOSISTEMA)
+         ========================================== -->
+    <section id="prueba-social" class="py-8 md:py-16 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold mb-2 text-black dark:text-white transition-colors">Elige tu realidad comercial:</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                
+                <!-- EL CAOS (AHORA CON CARRUSEL INTERACTIVO) -->
+                <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-lg border border-black/5 dark:border-white/5">
+                    
+                    <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Caos</h3>
+                    
+                    <!-- Contenedor del Carrusel -->
+                    <div class="w-full bg-white dark:bg-[#111] rounded-2xl overflow-hidden relative aspect-square md:aspect-[4/3] border border-black/10 dark:border-white/10" id="caos-carousel-wrapper">
+                        
+                        <!-- Icono decorativo de lupa para indicar zoom -->
+                        <div class="absolute top-4 right-4 z-20 bg-black/50 text-white p-2 rounded-full backdrop-blur-sm pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity">
+                            <i data-lucide="zoom-in" class="w-4 h-4"></i>
+                        </div>
+
+                        <!-- Etiqueta de la trampa -->
+                        <span class="absolute top-4 left-4 z-20 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">La Trampa</span>
+
+                        <!-- Pista deslizante (Track) -->
+                        <div class="carousel-container" id="carousel-container">
+                            <div class="carousel-track" id="carousel-track">
+                                <!-- Las imágenes se inyectan vía JS para mantener el código HTML limpio -->
+                            </div>
+                        </div>
+
+                        <!-- Indicadores de página -->
+                        <div class="carousel-indicators" id="carousel-indicators">
+                            <!-- Los dots se inyectan vía JS -->
+                        </div>
+                    </div>
+
+                    <!-- Encabezado / Texto Dinámico que cambia con el carrusel -->
+                    <div class="mt-6 text-center px-2 w-full dynamic-text-container">
+                        <p id="carousel-dynamic-text" class="text-gray-600 dark:text-gray-400 font-medium transition-colors text-sm md:text-base opacity-100">
+                            Cargando información...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- EL ECOSISTEMA (ESTÁTICO Y MANTENIDO) -->
+                <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-xl border border-black/10 dark:border-white/10">
+                    <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Ecosistema</h3>
+                    <div class="w-full bg-gray-100 dark:bg-black rounded-2xl overflow-hidden relative aspect-square md:aspect-[4/3] border border-black/20 dark:border-white/20 flex items-center justify-center p-4">
+                        <img src="https://via.placeholder.com/600x600/000000/ffffff?text=Calendario+%2B+Stripe" alt="Ecosistema" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105">
+                        <span class="absolute top-4 left-4 bg-green-500 text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">La Solución</span>
+                    </div>
+                    <div class="mt-6 text-center px-2">
+                        <p class="text-black dark:text-white font-bold transition-colors text-sm md:text-base">
+                            Tu "Cadenero" filtra la basura y solo te entrega compradores calificados.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         BLOQUE 3: ACORDEONES (FUGAS)
+         ========================================== -->
+    <section id="acordeones" class="py-16 px-6 relative z-10">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">¿Dónde se están fugando tus ventas hoy?</h2>
+                <p class="text-gray-600 dark:text-gray-400 font-light max-w-2xl mx-auto transition-colors">Selecciona tu mayor reto:</p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
+                    <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo descubrir la pieza exacta que falta en mi estrategia?</span>
+                        <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                        <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
+                            A través de una Auditoría profunda y sin fricción, identificamos el cuello de botella exacto en tu embudo. Dejamos de adivinar y usamos datos para saber con precisión en qué paso estás perdiendo el dinero.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
+                    <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo evitar competir por precio y lograr que rueguen por contratarme?</span>
+                        <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                        <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
+                            Construimos una <strong>Oferta Grand Slam</strong>. Al estructurar y empaquetar tu servicio de una manera única e incomparable, el precio deja de ser un factor y te conviertes en la única opción lógica en el mercado.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
+                    <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo lograr que no ignoren mi información en WhatsApp?</span>
+                        <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                        <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
+                            Implementando una Estrategia de Comunicación experta y un Catálogo persuasivo. Eliminamos los enormes bloques de texto aburridos y usamos marcos psicológicos que exigen atención inmediata.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
+                    <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo transformar likes en compradores reales con presupuesto?</span>
+                        <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                        <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
+                            Alineando tu prospección mediante 4 a 5 ángulos de ataque. Convertimos la atención superficial de redes sociales en un deseo profundo y genuino, captando a la élite de tu audiencia.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
+                    <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo filtrar curiosos sin dinero antes de que saturen mi tiempo?</span>
+                        <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                        <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
+                            Instalando la estrategia del Telefronter y <strong>"El Cadenero"</strong>. Un sistema de pre-cualificación estricto que rechaza automáticamente a quienes no pueden pagarte, blindando tu agenda solo para tomadores de decisiones.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         BLOQUE 4: EL SISTEMA (Mapa Zig Zag abajo)
+         ========================================== -->
+    <section id="sistema" class="py-16 px-6 relative z-10">
+        <div class="max-w-5xl mx-auto glass-panel p-8 md:p-16 rounded-3xl relative overflow-hidden shadow-2xl border border-black/5 dark:border-white/5">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">Tu Atajo de Ventas</h2>
+                <p class="text-gray-600 dark:text-gray-400 font-light max-w-2xl mx-auto transition-colors">
+                    El mapa exacto de 5 pasos que construimos para convertir tu WhatsApp en una máquina de cierres. Toca el inicio para ver cómo fluye el ecosistema.
+                </p>
+            </div>
+
+            <div class="relative w-full h-[380px] md:h-[450px] max-w-3xl mx-auto mb-16">
+                <div class="absolute top-[15%] left-[25%] w-[50%] border-t-[2px] border-dashed border-black/10 dark:border-white/10 -translate-y-1/2 z-0"></div>
+                <div class="absolute top-[15%] left-[75%] h-[35%] border-l-[2px] border-dashed border-black/10 dark:border-white/10 -translate-x-1/2 z-0"></div>
+                <div class="absolute top-[50%] left-[25%] w-[50%] border-t-[2px] border-dashed border-black/10 dark:border-white/10 -translate-y-1/2 z-0"></div>
+                <div class="absolute top-[50%] left-[25%] h-[35%] border-l-[2px] border-dashed border-black/10 dark:border-white/10 -translate-x-1/2 z-0"></div>
+                <div class="absolute top-[85%] left-[25%] w-[50%] border-t-[2px] border-dashed border-black/10 dark:border-white/10 -translate-y-1/2 z-0"></div>
+
+                <div id="line-1" class="absolute top-[15%] left-[25%] h-[2px] bg-black dark:bg-white shadow-[0_0_12px_#000] dark:shadow-[0_0_12px_#fff] transition-all ease-linear w-0 -translate-y-1/2 z-0"></div>
+                <div id="line-2" class="absolute top-[15%] left-[75%] w-[2px] bg-black dark:bg-white shadow-[0_0_12px_#000] dark:shadow-[0_0_12px_#fff] transition-all ease-linear h-0 -translate-x-1/2 z-0"></div>
+                <div id="line-3" class="absolute top-[50%] right-[25%] h-[2px] bg-black dark:bg-white shadow-[0_0_12px_#000] dark:shadow-[0_0_12px_#fff] transition-all ease-linear w-0 -translate-y-1/2 z-0"></div>
+                <div id="line-4" class="absolute top-[50%] left-[25%] w-[2px] bg-black dark:bg-white shadow-[0_0_12px_#000] dark:shadow-[0_0_12px_#fff] transition-all ease-linear h-0 -translate-x-1/2 z-0"></div>
+                <div id="line-5" class="absolute top-[85%] left-[25%] h-[2px] bg-black dark:bg-white shadow-[0_0_12px_#000] dark:shadow-[0_0_12px_#fff] transition-all ease-linear w-0 -translate-y-1/2 z-0"></div>
+
+                <div id="step-1" class="absolute top-[15%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-20 cursor-pointer" onclick="runProcess()">
+                    <div id="pop-start" class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-3 py-1.5 rounded-full text-[10px] font-extrabold whitespace-nowrap animate-bounce shadow-lg transition-colors">
+                        👆 Iniciar
+                        <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45 transition-colors"></div>
+                    </div>
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Autoridad<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-1.5 transition-all duration-300 opacity-100 bg-black border-[2px] border-black text-white pulse-black dark:bg-white dark:border-white dark:text-black dark:pulse-white node-active"><i data-lucide="user-check" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight transition-colors text-black dark:text-white node-active-text">1. Tu Perfil</span>
+                </div>
+                <div id="step-2" class="absolute top-[15%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Filtro<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="filter" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">2. Bienvenida</span>
+                </div>
+                <div id="step-3" class="absolute top-[50%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Dolor<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="search" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">3. Sondeo</span>
+                </div>
+                <div id="step-4" class="absolute top-[50%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Confianza<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="shield" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">4. El Puente</span>
+                </div>
+                <div id="step-5" class="absolute top-[85%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Sin Rogar<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="gift" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">5. Tu Oferta</span>
+                </div>
+                <div id="step-6" class="absolute top-[85%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-3 py-1.5 rounded text-[11px] font-extrabold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-lg z-20">¡Transacción!<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-12 h-12 md:w-14 md:h-14 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="check-circle" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                    <span class="step-text text-[12px] md:text-sm font-extrabold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">6. ¡Cierre!</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         BLOQUE 5: LEAD MAGNET
+         ========================================== -->
+    <section id="lead-magnet" class="py-20 px-6 relative z-10 border-t border-black/5 dark:border-white/5 transition-colors">
+        <div class="max-w-3xl mx-auto text-center glass-panel p-8 md:p-14 rounded-[2rem] border border-black/10 dark:border-white/10 shadow-2xl">
+            <i data-lucide="calculator" class="w-12 h-12 mx-auto mb-6 text-black dark:text-white transition-colors"></i>
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-6 text-black dark:text-white transition-colors leading-tight">Calculadora de Fugas en Ventas</h2>
+            <p class="text-gray-600 dark:text-gray-400 text-base md:text-lg mb-10 max-w-xl mx-auto transition-colors leading-relaxed">Descubre el monto exacto que tu empresa pierde cada mes. En menos de 5 minutos tendrás tu diagnóstico.</p>
+            <form action="#" method="POST" class="flex flex-col gap-5 max-w-md mx-auto text-left">
+                <div>
+                    <label for="name" class="block text-sm font-semibold text-black dark:text-white mb-2 ml-1">Tu Nombre</label>
+                    <input type="text" id="name" name="name" required placeholder="Ej. Roberto" class="w-full px-5 py-4 rounded-xl bg-white/50 dark:bg-black/50 border border-black/20 dark:border-white/20 text-black dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all shadow-inner">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-black dark:text-white mb-2 ml-1">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required placeholder="ceo@tuempresa.com" class="w-full px-5 py-4 rounded-xl bg-white/50 dark:bg-black/50 border border-black/20 dark:border-white/20 text-black dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all shadow-inner">
+                </div>
+                <button type="submit" class="mt-4 w-full bg-black text-white dark:bg-white dark:text-black font-extrabold py-4 px-8 rounded-full text-lg shadow-xl dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-transform duration-300 flex justify-center items-center gap-2">
+                    REVELAR MIS FUGAS <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-10 text-center border-t border-black/5 dark:border-white/5 relative z-10 bg-white/80 dark:bg-black/80 transition-colors">
+        <a href="#" class="text-xl font-bold tracking-widest uppercase font-sans text-gray-400 dark:text-gray-600 block mb-4 hover:text-black dark:hover:text-white transition-colors">RF.</a>
+        <a href="#" class="text-xs text-gray-500 hover:text-black dark:hover:text-white transition-colors mb-4 block underline decoration-gray-300 dark:decoration-gray-700">Políticas de Privacidad | Términos Legales</a>
+        <p class="text-xs text-gray-400 dark:text-gray-600">© <span id="current-year"></span> Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Theme Toggle
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const iconSun = document.getElementById('icon-sun');
+        const iconMoon = document.getElementById('icon-moon');
+
+        function updateThemeIcons() {
+            if (document.documentElement.classList.contains('dark')) {
+                iconSun.classList.remove('hidden');
+                iconMoon.classList.add('hidden');
+            } else {
+                iconMoon.classList.remove('hidden');
+                iconSun.classList.add('hidden');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+            updateThemeIcons();
+        });
+        updateThemeIcons();
+
+        // Perfil Flotante
+        const profileBtn = document.getElementById('profile-btn');
+        const profilePanel = document.getElementById('profile-panel');
+        const profileChevron = document.getElementById('profile-chevron');
+        let isProfileExpanded = false;
+
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            isProfileExpanded = !isProfileExpanded;
+            if(isProfileExpanded) {
+                profilePanel.style.maxHeight = '600px';
+                profilePanel.style.opacity = '1';
+                profileChevron.style.transform = 'rotate(180deg)';
+                profileBtn.classList.add('bg-gray-100', 'dark:bg-white/10');
+            } else {
+                profilePanel.style.maxHeight = '0';
+                profilePanel.style.opacity = '0';
+                profileChevron.style.transform = 'rotate(0deg)';
+                profileBtn.classList.remove('bg-gray-100', 'dark:bg-white/10');
+            }
+        });
+
+        // Acordeones
+        const accordions = document.querySelectorAll('.accordion-btn');
+        accordions.forEach(btn => {
+            btn.addEventListener('click', function() {
+                accordions.forEach(otherBtn => {
+                    if (otherBtn !== btn) {
+                        otherBtn.nextElementSibling.classList.remove('open');
+                        otherBtn.querySelector('.accordion-icon').classList.remove('open');
+                    }
+                });
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('.accordion-icon');
+                content.classList.toggle('open');
+                icon.classList.toggle('open');
+            });
+        });
+
+        // ==========================================
+        // LÓGICA DEL CARRUSEL "EL CAOS"
+        // ==========================================
+        
+        // 1. Array con la información de cada Slide (Imagen + Texto descriptivo)
+        const carouselData = [
+            {
+                src: '1000315674.png',
+                text: 'Perfil de negocio inactivo o mal configurado que ahuyenta ventas.'
+            },
+            {
+                src: '1000315680.png',
+                text: 'El ciclo caótico: pérdida de tiempo por falta de procedimientos.'
+            },
+            {
+                src: '1000315808.png',
+                text: 'Los 3 asesinos de la conversión: improvisación, caos y rendición.'
+            }
+        ];
+
+        const track = document.getElementById('carousel-track');
+        const indicatorsContainer = document.getElementById('carousel-indicators');
+        const dynamicText = document.getElementById('carousel-dynamic-text');
+        const carouselContainer = document.getElementById('carousel-container');
+        
+        let currentIndex = 0;
+        let slideInterval;
+        let isHovered = false;
+
+        // 2. Construir el DOM del Carrusel dinámicamente
+        carouselData.forEach((item, index) => {
+            // Crear el slide (imagen)
+            const slide = document.createElement('div');
+            slide.className = 'carousel-slide';
+            slide.innerHTML = `<img src="${item.src}" alt="Caos ${index + 1}" class="carousel-img" onerror="this.src='https://via.placeholder.com/600x600/333/fff?text=Imagen+${index+1}'">`;
+            track.appendChild(slide);
+
+            // Crear el punto indicador
+            const dot = document.createElement('div');
+            dot.className = `indicator-dot ${index === 0 ? 'active' : ''}`;
+            dot.addEventListener('click', () => goToSlide(index));
+            indicatorsContainer.appendChild(dot);
+        });
+
+        // 3. Función para cambiar de slide
+        function goToSlide(index) {
+            // Actualizar pista
+            track.style.transform = `translateX(-${index * 100}%)`;
+            
+            // Actualizar puntos
+            const dots = indicatorsContainer.querySelectorAll('.indicator-dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+
+            // Actualizar texto dinámico con un suave desvanecimiento
+            dynamicText.style.opacity = '0';
+            setTimeout(() => {
+                dynamicText.textContent = carouselData[index].text;
+                dynamicText.style.opacity = '1';
+            }, 300); // 300ms debe coincidir con la transición en CSS si la hubiera
+
+            currentIndex = index;
+        }
+
+        // 4. Función para avanzar al siguiente automáticamente
+        function nextSlide() {
+            if (!isHovered) { // Solo avanza si NO tienen el ratón/dedo encima
+                const nextIndex = (currentIndex + 1) % carouselData.length;
+                goToSlide(nextIndex);
+            }
+        }
+
+        // 5. Iniciar la rotación automática (cada 4 segundos)
+        function startCarousel() {
+            slideInterval = setInterval(nextSlide, 4000); 
+        }
+
+        // 6. Manejar eventos de Interacción (Hover y Touch para el Zoom)
+        // Al interactuar: Pautar el carrusel. Al soltar: Reanudar.
+        carouselContainer.addEventListener('mouseenter', () => { isHovered = true; });
+        carouselContainer.addEventListener('mouseleave', () => { isHovered = false; });
+        
+        // Para móviles (tocar la imagen)
+        carouselContainer.addEventListener('touchstart', () => { isHovered = true; });
+        carouselContainer.addEventListener('touchend', () => { 
+            setTimeout(() => { isHovered = false; }, 1000); // Retraso para que vean la imagen antes de que vuelva a girar
+        });
+
+        // Inicializar el primer slide y el temporizador
+        goToSlide(0);
+        startCarousel();
+
+        // ==========================================
+        // LÓGICA MAPA ZIG ZAG
+        // ==========================================
+        let isProcessRunning = false;
+        function drawLine(id, dimension, targetValue, duration) {
+            const line = document.getElementById(id);
+            if(!line) return;
+            line.style.transitionDuration = duration + 'ms';
+            if(dimension === 'width') line.style.width = targetValue;
+            if(dimension === 'height') line.style.height = targetValue;
+        }
+
+        function activateStep(stepId, isFinal) {
+            const el = document.getElementById(stepId);
+            if(!el) return;
+            const iconBg = el.querySelector('.icon-bg');
+            const stepText = el.querySelector('.step-text');
+            const popUp = el.querySelector('.pop-up');
+
+            if (iconBg) iconBg.classList.add('node-active');
+            if (stepText) stepText.classList.add('node-active-text'); 
+            if (popUp) {
+                popUp.classList.remove('opacity-0', 'scale-50');
+                popUp.classList.add('opacity-100', 'scale-100', 'animate-bounce');
+                setTimeout(() => popUp.classList.remove('animate-bounce'), 2000);
+            }
+        }
+
+        function runProcess() {
+            if(isProcessRunning) return;
+            isProcessRunning = true;
+            const popStart = document.getElementById('pop-start');
+            if(popStart) popStart.style.display = 'none';
+
+            const timeL1 = 1136, timeL2 = 795, timeL3 = 1136, timeL4 = 795, timeL5 = 1136; 
+
+            activateStep('step-1', false);
+            drawLine('line-1', 'width', '50%', timeL1);
+
+            setTimeout(() => { activateStep('step-2', false); drawLine('line-2', 'height', '35%', timeL2); }, timeL1);
+            setTimeout(() => { activateStep('step-3', false); drawLine('line-3', 'width', '50%', timeL3); }, timeL1 + timeL2);
+            setTimeout(() => { activateStep('step-4', false); drawLine('line-4', 'height', '35%', timeL4); }, timeL1 + timeL2 + timeL3);
+            setTimeout(() => { activateStep('step-5', false); drawLine('line-5', 'width', '50%', timeL5); }, timeL1 + timeL2 + timeL3 + timeL4);
+            setTimeout(() => { activateStep('step-6', true); }, timeL1 + timeL2 + timeL3 + timeL4 + timeL5);
+        }
+
+        // Canvas de fondo
+        function initCanvas() {
+            resize();
+            animateStars();
+        }
+        window.onload = initCanvas;
+
+    </script>
+</body>
+</html>
