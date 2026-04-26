@@ -12,16 +12,30 @@
             darkMode: 'class',
         }
         
-        // Script preventivo para evitar el "Flasheo" de colores al recargar
-        if (localStorage.getItem('theme') === 'light') {
-            document.documentElement.classList.remove('dark');
-        } else {
-            document.documentElement.classList.add('dark');
-        }
+        // Script inicial preventivo + Lógica de Horario Automático
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const currentHour = new Date().getHours();
+            // Consideramos "Día" de 6:00 a 17:59 (6am a 6pm casi)
+            const isDayTime = currentHour >= 6 && currentHour < 18;
+
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                // Si no hay preferencia guardada, usamos la hora
+                if (isDayTime) {
+                    document.documentElement.classList.remove('dark');
+                } else {
+                    document.documentElement.classList.add('dark');
+                }
+            }
+        })();
     </script>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -164,19 +178,19 @@
         html:not(.dark) .name-static-gradient { background-image: linear-gradient(to right, #000000 0%, #000000 50%, #888888 100%); }
 
         /* =========================================
-           NUEVO: ESTILOS PARA EL CARRUSEL "EL CAOS"
+           ESTILOS PARA EL CARRUSEL "EL CAOS"
            ========================================= */
         .carousel-container {
             overflow: hidden;
             position: relative;
             width: 100%;
             height: 100%;
-            cursor: zoom-in; /* Cursor de lupa */
+            cursor: zoom-in;
         }
         
         .carousel-track {
             display: flex;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); /* Transición suave */
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             height: 100%;
         }
 
@@ -186,22 +200,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Para contener la imagen cuando se amplíe */
+            overflow: hidden;
         }
 
         .carousel-img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: top;
-            transition: transform 0.4s ease-out; /* Transición suave para el zoom */
+            object-fit: contain; /* Cambiado a contain para que se vea toda la info */
+            background-color: #f1f5f9; /* Fondo suave para imágenes PNG transparentes */
+            transition: transform 0.4s ease-out;
             transform-origin: center center;
+        }
+        html.dark .carousel-img {
+            background-color: #1e293b;
         }
 
         /* Efecto Lupa (Hover/Touch) */
         .carousel-container:hover .carousel-img,
         .carousel-container:active .carousel-img {
-            transform: scale(1.4); /* Ajusta este valor (1.5, 2.0, etc.) para más o menos zoom */
+            transform: scale(1.4);
         }
 
         /* Indicadores (puntitos) */
@@ -213,7 +230,7 @@
             display: flex;
             gap: 6px;
             z-index: 10;
-            pointer-events: none; /* Que el zoom funcione a través de los puntos */
+            pointer-events: none;
         }
 
         .indicator-dot {
@@ -230,9 +247,8 @@
             transform: scale(1.2);
         }
 
-        /* Texto Dinámico */
         .dynamic-text-container {
-            min-height: 48px; /* Evita saltos de altura si los textos son de diferente largo */
+            min-height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -288,7 +304,7 @@
 
         </div>
 
-        <!-- Panel de Contenido Expandible (Posición Absoluta para flotar) -->
+        <!-- Panel de Contenido Expandible -->
         <div id="profile-panel" class="profile-expandable max-h-0 opacity-0 w-full flex justify-center overflow-hidden transition-all duration-500 absolute top-full left-0 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 shadow-2xl z-40">
             <div class="w-full max-w-[420px] px-4 py-4 md:py-6">
                 <!-- Tarjeta ID -->
@@ -297,27 +313,25 @@
                     <div class="absolute inset-0 z-0 card-stars-dark hidden dark:block pointer-events-none"></div>
                     
                     <div class="relative z-10">
-                        <!-- Header de la Tarjeta -->
                         <div class="flex items-center gap-4 mb-4">
                             <div class="w-[68px] h-[68px] rounded-full overflow-hidden bg-gray-200 dark:bg-black flex-shrink-0 border border-black/10 dark:border-white/10">
                                 <img src="https://via.placeholder.com/150/000000/ffffff?text=RF" alt="Roberto Fibonacci" class="w-full h-full object-cover">
                             </div>
                             <div class="flex flex-col justify-center">
                                 <h2 class="text-xl font-bold tracking-tight leading-tight mb-1.5 transition-colors name-static-gradient">Roberto Fibonacci</h2>
-                                <div class="flex items-center gap-3 text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-1 transition-colors">
+                                <div class="flex items-center gap-3 text-[11px] text-gray-800 dark:text-gray-400 font-medium mb-1 transition-colors">
                                     <div class="flex items-center gap-1.5"><i data-lucide="briefcase" class="w-3.5 h-3.5"></i> Founder de Prospecta</div>
                                 </div>
-                                <div class="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium transition-colors">
+                                <div class="flex items-center gap-1.5 text-[11px] text-gray-800 dark:text-gray-400 font-medium transition-colors">
                                     <i data-lucide="mail" class="w-3.5 h-3.5"></i> hola@robertofibonacci.com
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-5 bg-gray-50 dark:bg-white/5 border border-black/5 dark:border-white/5 px-3 py-2 rounded-xl transition-colors">
-                            <p class="text-[11px] text-gray-700 dark:text-gray-300 leading-relaxed">Estratega de Ventas especializado en modelos <span class="text-black dark:text-white font-bold">High Ticket</span>.</p>
+                            <p class="text-[11px] text-gray-800 dark:text-gray-300 font-medium leading-relaxed">Estratega de Ventas especializado en modelos <span class="text-black dark:text-white font-bold">High Ticket</span>.</p>
                         </div>
                         
-                        <!-- Redes Sociales -->
                         <div class="grid grid-cols-2 gap-2.5">
                             <a href="https://instagram.com/rober_fibonacci" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
                                 <i data-lucide="instagram" class="w-4 h-4 flex-shrink-0"></i>
@@ -343,18 +357,23 @@
     </header>
 
     <!-- ==========================================
-         BLOQUE 1: HERO
+         BLOQUE 1: HERO (Textos ajustados para legibilidad en tema claro)
          ========================================== -->
     <section class="relative pt-6 md:pt-12 pb-8 md:pb-12 z-0">
         <div class="max-w-6xl mx-auto px-6 w-full">
             <div class="max-w-4xl text-left">
+                <!-- Se mantiene el negro y negritas intacto -->
                 <h1 class="text-4xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight text-black dark:text-white transition-colors">
                     El mayor problema de tu negocio no es tu producto, es operar a ciegas y sin un mapa.
                 </h1>
-                <p class="text-[15px] md:text-lg text-gray-500 dark:text-gray-400 max-w-3xl font-light leading-relaxed mb-6 md:mb-8 border-l-2 border-black/20 dark:border-white/20 pl-4 transition-colors">
+                
+                <!-- Ajuste de legibilidad: text-gray-800 en claro, text-gray-400 en oscuro. font-medium en lugar de font-light -->
+                <p class="text-[15px] md:text-lg text-gray-800 dark:text-gray-400 font-medium max-w-3xl leading-relaxed mb-6 md:mb-8 border-l-2 border-black/20 dark:border-white/20 pl-4 transition-colors">
                     Salir al mercado sin estructura satura tu tiempo con curiosos y hace que pierdas tus mejores ventas. Nosotros instalamos el ecosistema completo: estandarizamos tu mensaje, filtramos con IA y te damos la ruta para cerrar. 
-                    <strong class="text-black dark:text-white font-medium block mt-2">Tú solo hablas con quien tiene la tarjeta en la mano.</strong>
+                    <strong class="text-black dark:text-white font-bold block mt-2">Tú solo hablas con quien tiene la tarjeta en la mano.</strong>
                 </p>
+
+                <!-- CTA Botón -->
                 <a href="#lead-magnet" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-black text-white dark:bg-white dark:text-black text-[15px] md:text-lg font-bold rounded-full hover:scale-105 transition-transform duration-300 shadow-xl dark:shadow-[0_0_20px_rgba(255,255,255,0.15)] w-full md:w-auto">
                     Realizar mi Diagnóstico Gratuito
                     <i data-lucide="arrow-down-circle" class="w-5 h-5"></i>
@@ -374,7 +393,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                 
-                <!-- EL CAOS (AHORA CON CARRUSEL INTERACTIVO) -->
+                <!-- EL CAOS (CARRUSEL INTERACTIVO) -->
                 <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-lg border border-black/5 dark:border-white/5">
                     
                     <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Caos</h3>
@@ -404,20 +423,22 @@
                     </div>
 
                     <!-- Encabezado / Texto Dinámico que cambia con el carrusel -->
+                    <!-- Ajuste legibilidad: text-gray-800, font-medium -->
                     <div class="mt-6 text-center px-2 w-full dynamic-text-container">
-                        <p id="carousel-dynamic-text" class="text-gray-600 dark:text-gray-400 font-medium transition-colors text-sm md:text-base opacity-100">
+                        <p id="carousel-dynamic-text" class="text-gray-800 dark:text-gray-400 font-medium transition-colors text-sm md:text-base opacity-100">
                             Cargando información...
                         </p>
                     </div>
                 </div>
 
-                <!-- EL ECOSISTEMA (ESTÁTICO Y MANTENIDO) -->
+                <!-- EL ECOSISTEMA (ESTÁTICO) -->
                 <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-xl border border-black/10 dark:border-white/10">
                     <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Ecosistema</h3>
                     <div class="w-full bg-gray-100 dark:bg-black rounded-2xl overflow-hidden relative aspect-square md:aspect-[4/3] border border-black/20 dark:border-white/20 flex items-center justify-center p-4">
                         <img src="https://via.placeholder.com/600x600/000000/ffffff?text=Calendario+%2B+Stripe" alt="Ecosistema" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105">
                         <span class="absolute top-4 left-4 bg-green-500 text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">La Solución</span>
                     </div>
+                    <!-- Ajuste legibilidad: text-black dark:text-white se mantiene fuerte -->
                     <div class="mt-6 text-center px-2">
                         <p class="text-black dark:text-white font-bold transition-colors text-sm md:text-base">
                             Tu "Cadenero" filtra la basura y solo te entrega compradores calificados.
@@ -436,16 +457,17 @@
         <div class="max-w-3xl mx-auto">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">¿Dónde se están fugando tus ventas hoy?</h2>
-                <p class="text-gray-600 dark:text-gray-400 font-light max-w-2xl mx-auto transition-colors">Selecciona tu mayor reto:</p>
+                <p class="text-gray-800 dark:text-gray-400 font-medium max-w-2xl mx-auto transition-colors">Selecciona tu mayor reto:</p>
             </div>
 
             <div class="space-y-4">
                 <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
                     <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo descubrir la pieza exacta que falta en mi estrategia?</span>
+                        <span class="font-bold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo descubrir la pieza exacta que falta en mi estrategia?</span>
                         <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
                     </button>
-                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                    <!-- Ajuste legibilidad: text-gray-800 dark:text-gray-400 font-medium -->
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-800 dark:text-gray-400 font-medium leading-relaxed text-sm md:text-base">
                         <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
                             A través de una Auditoría profunda y sin fricción, identificamos el cuello de botella exacto en tu embudo. Dejamos de adivinar y usamos datos para saber con precisión en qué paso estás perdiendo el dinero.
                         </div>
@@ -454,22 +476,22 @@
 
                 <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
                     <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo evitar competir por precio y lograr que rueguen por contratarme?</span>
+                        <span class="font-bold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo evitar competir por precio y lograr que rueguen por contratarme?</span>
                         <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
                     </button>
-                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-800 dark:text-gray-400 font-medium leading-relaxed text-sm md:text-base">
                         <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
-                            Construimos una <strong>Oferta Grand Slam</strong>. Al estructurar y empaquetar tu servicio de una manera única e incomparable, el precio deja de ser un factor y te conviertes en la única opción lógica en el mercado.
+                            Construimos una <strong class="text-black dark:text-white font-bold">Oferta Grand Slam</strong>. Al estructurar y empaquetar tu servicio de una manera única e incomparable, el precio deja de ser un factor y te conviertes en la única opción lógica en el mercado.
                         </div>
                     </div>
                 </div>
 
                 <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
                     <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo lograr que no ignoren mi información en WhatsApp?</span>
+                        <span class="font-bold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo lograr que no ignoren mi información en WhatsApp?</span>
                         <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
                     </button>
-                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-800 dark:text-gray-400 font-medium leading-relaxed text-sm md:text-base">
                         <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
                             Implementando una Estrategia de Comunicación experta y un Catálogo persuasivo. Eliminamos los enormes bloques de texto aburridos y usamos marcos psicológicos que exigen atención inmediata.
                         </div>
@@ -478,10 +500,10 @@
 
                 <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
                     <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo transformar likes en compradores reales con presupuesto?</span>
+                        <span class="font-bold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo transformar likes en compradores reales con presupuesto?</span>
                         <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
                     </button>
-                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-800 dark:text-gray-400 font-medium leading-relaxed text-sm md:text-base">
                         <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
                             Alineando tu prospección mediante 4 a 5 ángulos de ataque. Convertimos la atención superficial de redes sociales en un deseo profundo y genuino, captando a la élite de tu audiencia.
                         </div>
@@ -490,12 +512,12 @@
 
                 <div class="glass-panel rounded-xl overflow-hidden border border-black/5 dark:border-white/5">
                     <button class="accordion-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo filtrar curiosos sin dinero antes de que saturen mi tiempo?</span>
+                        <span class="font-bold text-base md:text-lg text-black dark:text-white pr-4">¿Cómo filtrar curiosos sin dinero antes de que saturen mi tiempo?</span>
                         <i data-lucide="chevron-down" class="w-6 h-6 flex-shrink-0 text-black dark:text-white accordion-icon"></i>
                     </button>
-                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
+                    <div class="accordion-content max-h-0 opacity-0 overflow-hidden px-6 text-gray-800 dark:text-gray-400 font-medium leading-relaxed text-sm md:text-base">
                         <div class="pb-5 border-t border-black/10 dark:border-white/10 pt-4 mt-2">
-                            Instalando la estrategia del Telefronter y <strong>"El Cadenero"</strong>. Un sistema de pre-cualificación estricto que rechaza automáticamente a quienes no pueden pagarte, blindando tu agenda solo para tomadores de decisiones.
+                            Instalando la estrategia del Telefronter y <strong class="text-black dark:text-white font-bold">"El Cadenero"</strong>. Un sistema de pre-cualificación estricto que rechaza automáticamente a quienes no pueden pagarte, blindando tu agenda solo para tomadores de decisiones.
                         </div>
                     </div>
                 </div>
@@ -510,7 +532,8 @@
         <div class="max-w-5xl mx-auto glass-panel p-8 md:p-16 rounded-3xl relative overflow-hidden shadow-2xl border border-black/5 dark:border-white/5">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">Tu Atajo de Ventas</h2>
-                <p class="text-gray-600 dark:text-gray-400 font-light max-w-2xl mx-auto transition-colors">
+                <!-- Ajuste legibilidad: text-gray-800 -->
+                <p class="text-gray-800 dark:text-gray-400 font-medium max-w-2xl mx-auto transition-colors">
                     El mapa exacto de 5 pasos que construimos para convertir tu WhatsApp en una máquina de cierres. Toca el inicio para ver cómo fluye el ecosistema.
                 </p>
             </div>
@@ -573,7 +596,8 @@
         <div class="max-w-3xl mx-auto text-center glass-panel p-8 md:p-14 rounded-[2rem] border border-black/10 dark:border-white/10 shadow-2xl">
             <i data-lucide="calculator" class="w-12 h-12 mx-auto mb-6 text-black dark:text-white transition-colors"></i>
             <h2 class="text-3xl md:text-5xl font-extrabold mb-6 text-black dark:text-white transition-colors leading-tight">Calculadora de Fugas en Ventas</h2>
-            <p class="text-gray-600 dark:text-gray-400 text-base md:text-lg mb-10 max-w-xl mx-auto transition-colors leading-relaxed">Descubre el monto exacto que tu empresa pierde cada mes. En menos de 5 minutos tendrás tu diagnóstico.</p>
+            <!-- Ajuste legibilidad: text-gray-800 -->
+            <p class="text-gray-800 dark:text-gray-400 font-medium text-base md:text-lg mb-10 max-w-xl mx-auto transition-colors leading-relaxed">Descubre el monto exacto que tu empresa pierde cada mes. En menos de 5 minutos tendrás tu diagnóstico.</p>
             <form action="#" method="POST" class="flex flex-col gap-5 max-w-md mx-auto text-left">
                 <div>
                     <label for="name" class="block text-sm font-semibold text-black dark:text-white mb-2 ml-1">Tu Nombre</label>
@@ -592,9 +616,9 @@
 
     <!-- FOOTER -->
     <footer class="py-10 text-center border-t border-black/5 dark:border-white/5 relative z-10 bg-white/80 dark:bg-black/80 transition-colors">
-        <a href="#" class="text-xl font-bold tracking-widest uppercase font-sans text-gray-400 dark:text-gray-600 block mb-4 hover:text-black dark:hover:text-white transition-colors">RF.</a>
-        <a href="#" class="text-xs text-gray-500 hover:text-black dark:hover:text-white transition-colors mb-4 block underline decoration-gray-300 dark:decoration-gray-700">Políticas de Privacidad | Términos Legales</a>
-        <p class="text-xs text-gray-400 dark:text-gray-600">© <span id="current-year"></span> Todos los derechos reservados.</p>
+        <a href="#" class="text-xl font-bold tracking-widest uppercase font-sans text-gray-800 dark:text-gray-600 block mb-4 hover:text-black dark:hover:text-white transition-colors">RF.</a>
+        <a href="#" class="text-xs text-gray-500 hover:text-black dark:hover:text-white transition-colors mb-4 block underline decoration-gray-300 dark:decoration-gray-700 font-medium">Políticas de Privacidad | Términos Legales</a>
+        <p class="text-xs text-gray-500 dark:text-gray-600 font-medium">© <span id="current-year"></span> Todos los derechos reservados.</p>
     </footer>
 
     <!-- Scripts -->
@@ -602,7 +626,7 @@
         lucide.createIcons();
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // Theme Toggle
+        // Theme Toggle (Lógica de Botón manual)
         const themeToggleBtn = document.getElementById('theme-toggle');
         const iconSun = document.getElementById('icon-sun');
         const iconMoon = document.getElementById('icon-moon');
@@ -619,6 +643,7 @@
 
         themeToggleBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
+            // Al hacer clic, guardamos la preferencia manual del usuario
             if (document.documentElement.classList.contains('dark')) {
                 localStorage.setItem('theme', 'dark');
             } else {
@@ -626,6 +651,8 @@
             }
             updateThemeIcons();
         });
+        
+        // Ejecutar al cargar para mostrar el icono correcto según la lógica del <head>
         updateThemeIcons();
 
         // Perfil Flotante
@@ -671,18 +698,18 @@
         // LÓGICA DEL CARRUSEL "EL CAOS"
         // ==========================================
         
-        // 1. Array con la información de cada Slide (Imagen + Texto descriptivo)
+        // Nombres de archivos actualizados según requerimiento
         const carouselData = [
             {
-                src: '1000315674.png',
+                src: 'caos-perfil-whatsapp.png',
                 text: 'Perfil de negocio inactivo o mal configurado que ahuyenta ventas.'
             },
             {
-                src: '1000315680.png',
+                src: 'caos-ciclo-ventas.png',
                 text: 'El ciclo caótico: pérdida de tiempo por falta de procedimientos.'
             },
             {
-                src: '1000315808.png',
+                src: 'caos-asesinos-conversion.png',
                 text: 'Los 3 asesinos de la conversión: improvisación, caos y rendición.'
             }
         ];
@@ -696,67 +723,54 @@
         let slideInterval;
         let isHovered = false;
 
-        // 2. Construir el DOM del Carrusel dinámicamente
         carouselData.forEach((item, index) => {
-            // Crear el slide (imagen)
             const slide = document.createElement('div');
             slide.className = 'carousel-slide';
             slide.innerHTML = `<img src="${item.src}" alt="Caos ${index + 1}" class="carousel-img" onerror="this.src='https://via.placeholder.com/600x600/333/fff?text=Imagen+${index+1}'">`;
             track.appendChild(slide);
 
-            // Crear el punto indicador
             const dot = document.createElement('div');
             dot.className = `indicator-dot ${index === 0 ? 'active' : ''}`;
             dot.addEventListener('click', () => goToSlide(index));
             indicatorsContainer.appendChild(dot);
         });
 
-        // 3. Función para cambiar de slide
         function goToSlide(index) {
-            // Actualizar pista
             track.style.transform = `translateX(-${index * 100}%)`;
             
-            // Actualizar puntos
             const dots = indicatorsContainer.querySelectorAll('.indicator-dot');
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === index);
             });
 
-            // Actualizar texto dinámico con un suave desvanecimiento
             dynamicText.style.opacity = '0';
             setTimeout(() => {
                 dynamicText.textContent = carouselData[index].text;
                 dynamicText.style.opacity = '1';
-            }, 300); // 300ms debe coincidir con la transición en CSS si la hubiera
+            }, 300);
 
             currentIndex = index;
         }
 
-        // 4. Función para avanzar al siguiente automáticamente
         function nextSlide() {
-            if (!isHovered) { // Solo avanza si NO tienen el ratón/dedo encima
+            if (!isHovered) { 
                 const nextIndex = (currentIndex + 1) % carouselData.length;
                 goToSlide(nextIndex);
             }
         }
 
-        // 5. Iniciar la rotación automática (cada 4 segundos)
         function startCarousel() {
             slideInterval = setInterval(nextSlide, 4000); 
         }
 
-        // 6. Manejar eventos de Interacción (Hover y Touch para el Zoom)
-        // Al interactuar: Pautar el carrusel. Al soltar: Reanudar.
         carouselContainer.addEventListener('mouseenter', () => { isHovered = true; });
         carouselContainer.addEventListener('mouseleave', () => { isHovered = false; });
         
-        // Para móviles (tocar la imagen)
         carouselContainer.addEventListener('touchstart', () => { isHovered = true; });
         carouselContainer.addEventListener('touchend', () => { 
-            setTimeout(() => { isHovered = false; }, 1000); // Retraso para que vean la imagen antes de que vuelva a girar
+            setTimeout(() => { isHovered = false; }, 1000); 
         });
 
-        // Inicializar el primer slide y el temporizador
         goToSlide(0);
         startCarousel();
 
@@ -807,12 +821,65 @@
         }
 
         // Canvas de fondo
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let stars = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            const numStars = Math.floor((width * height) / 4500); 
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 1.2 + 0.3, 
+                    opacity: Math.random(), 
+                    speed: Math.random() * 0.003 + 0.001, 
+                    direction: Math.random() > 0.5 ? 1 : -1 
+                });
+            }
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, width, height);
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            stars.forEach(star => {
+                star.opacity += star.speed * star.direction;
+                if (star.opacity >= 1) { star.opacity = 1; star.direction = -1; } 
+                else if (star.opacity <= 0.1) { star.opacity = 0.1; star.direction = 1; }
+                
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = isDark ? `rgba(255, 255, 255, ${star.opacity})` : `rgba(0, 0, 0, ${star.opacity})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animateStars);
+        }
+
         function initCanvas() {
             resize();
             animateStars();
+            window.addEventListener('resize', resize);
         }
+        
         window.onload = initCanvas;
 
+        // Formulario
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('¡Gracias! Redirigiendo a la Calculadora...');
+        });
     </script>
 </body>
 </html>
