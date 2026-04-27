@@ -251,7 +251,7 @@
         }
 
         /* =========================================
-           NUEVO: ESTILOS DEL LIGHTBOX (MODAL FULLSCREEN)
+           ESTILOS DEL LIGHTBOX (MODAL FULLSCREEN)
            ========================================= */
         #lightbox-modal {
             position: fixed;
@@ -325,11 +325,10 @@
         <img src="" alt="Vista ampliada" id="lightbox-img">
     </div>
 
-    <!-- ENCABEZADO STICKY COMPLETO (Todo en 1 sola línea) -->
+    <!-- ENCABEZADO STICKY COMPLETO -->
     <header class="sticky top-0 z-50 w-full transition-all duration-500 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-black/10 dark:border-white/10">
         
         <div class="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between w-full">
-            
             <!-- Izquierda: Logo RF. -->
             <div class="w-1/3 flex justify-start items-center">
                 <a href="#" class="text-xl font-bold tracking-widest uppercase font-sans text-gray-800 dark:text-gray-200 hover:text-black dark:hover:text-white transition-colors">RF.</a>
@@ -354,7 +353,6 @@
                     <a href="#lead-magnet" class="font-semibold text-black dark:text-white hover:opacity-70 transition-opacity">Diagnóstico</a>
                 </div>
                 
-                <!-- Botón Día / Noche -->
                 <button id="theme-toggle" class="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors outline-none flex-shrink-0" title="Cambiar Tema">
                     <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
                     <i data-lucide="moon" id="icon-moon" class="w-5 h-5 hidden"></i>
@@ -364,7 +362,6 @@
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
             </div>
-
         </div>
 
         <!-- Panel de Contenido Expandible -->
@@ -420,24 +417,18 @@
     </header>
 
     <!-- ==========================================
-         BLOQUE 1: HERO
+         SECCIÓN 1: HERO
          ========================================== -->
     <section class="relative pt-6 md:pt-12 pb-8 md:pb-12 z-0">
         <div class="max-w-6xl mx-auto px-6 w-full">
             <div class="max-w-4xl text-left">
-                
-                <!-- NUEVO TITULAR (H1) APLICADO -->
                 <h1 class="text-4xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight text-black dark:text-white transition-colors">
                     ¿Cuántas horas y miles de pesos perdiste esta semana atendiendo a prospectos que nunca tuvieron la intención de comprarte?
                 </h1>
-                
-                <!-- NUEVO SUBTÍTULO APLICADO -->
                 <p class="text-[15px] md:text-lg text-gray-800 dark:text-gray-400 font-medium max-w-3xl leading-relaxed mb-6 md:mb-8 border-l-2 border-black/20 dark:border-white/20 pl-4 transition-colors">
                     Atender a todo el que te escribe no es "dar buen servicio", es un suicidio comercial que agota a tu equipo y espanta a tus clientes de alto valor. Nosotros blindamos tu proceso: auditamos por qué se caen tus tratos, colocamos un filtro automático de inteligencia artificial para descalificar curiosos y diseñamos tus textos de seguimiento.
-                    <!-- Frase final en negrita para mayor impacto -->
                     <strong class="text-black dark:text-white font-bold block mt-2">Deja de rogar por ventas y empieza a cerrar.</strong>
                 </p>
-                
                 <a href="#lead-magnet" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-black text-white dark:bg-white dark:text-black text-[15px] md:text-lg font-bold rounded-full hover:scale-105 transition-transform duration-300 shadow-xl dark:shadow-[0_0_20px_rgba(255,255,255,0.15)] w-full md:w-auto">
                     Realizar mi Diagnóstico Gratuito
                     <i data-lucide="arrow-down-circle" class="w-5 h-5"></i>
@@ -447,71 +438,52 @@
     </section>
 
     <!-- ==========================================
-         BLOQUE 2: PRUEBA SOCIAL (CARRUSEL vs ECOSISTEMA)
+         SECCIÓN 2: EL CAOS (CARRUSEL)
          ========================================== -->
-    <section id="prueba-social" class="py-8 md:py-16 px-6 relative z-10">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-10">
+    <section id="prueba-social" class="py-8 md:py-12 px-6 relative z-10">
+        <!-- Contenedor único centrado (Ya no hay grid/columnas) -->
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-8">
                 <h2 class="text-3xl md:text-4xl font-bold mb-2 text-black dark:text-white transition-colors">Elige tu realidad comercial:</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+            <!-- CAJÓN DEL CAOS -->
+            <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-lg border border-black/5 dark:border-white/5">
+                <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Caos</h3>
                 
-                <!-- EL CAOS (CARRUSEL INTERACTIVO) -->
-                <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-lg border border-black/5 dark:border-white/5">
-                    
-                    <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Caos</h3>
-                    
-                    <div class="w-full bg-white dark:bg-[#111] rounded-2xl overflow-hidden relative aspect-square md:aspect-[4/3] border border-black/10 dark:border-white/10" id="caos-carousel-wrapper">
-                        
-                        <div class="absolute top-4 right-4 z-20 bg-black/50 text-white p-2 rounded-full backdrop-blur-sm pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity">
-                            <i data-lucide="zoom-in" class="w-4 h-4"></i>
-                        </div>
+                <div class="w-full bg-white dark:bg-[#111] rounded-2xl overflow-hidden relative aspect-square md:aspect-[4/3] border border-black/10 dark:border-white/10" id="caos-carousel-wrapper">
+                    <div class="absolute top-4 right-4 z-20 bg-black/50 text-white p-2 rounded-full backdrop-blur-sm pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity">
+                        <i data-lucide="zoom-in" class="w-4 h-4"></i>
+                    </div>
+                    <span class="absolute top-4 left-4 z-20 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">La Trampa</span>
 
-                        <span class="absolute top-4 left-4 z-20 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">La Trampa</span>
-
-                        <div class="carousel-container" id="carousel-container">
-                            <div class="carousel-track" id="carousel-track">
-                                <!-- Inyectado vía JS -->
-                            </div>
-                        </div>
-
-                        <div class="carousel-indicators" id="carousel-indicators">
+                    <div class="carousel-container" id="carousel-container">
+                        <div class="carousel-track" id="carousel-track">
                             <!-- Inyectado vía JS -->
                         </div>
                     </div>
 
-                    <div class="mt-6 text-center px-2 w-full dynamic-text-container">
-                        <p id="carousel-dynamic-text" class="text-gray-800 dark:text-gray-400 font-medium transition-colors text-sm md:text-base opacity-100">
-                            Cargando información...
-                        </p>
+                    <div class="carousel-indicators" id="carousel-indicators">
+                        <!-- Inyectado vía JS -->
                     </div>
                 </div>
 
-                <!-- EL ECOSISTEMA (ESTÁTICO) -->
-                <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-xl border border-black/10 dark:border-white/10">
-                    <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Ecosistema</h3>
-                    <div class="w-full bg-gray-100 dark:bg-black rounded-2xl overflow-hidden relative aspect-square md:aspect-[4/3] border border-black/20 dark:border-white/20 flex items-center justify-center p-4">
-                        <img src="https://via.placeholder.com/600x600/000000/ffffff?text=Calendario+%2B+Stripe" alt="Ecosistema" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105">
-                        <span class="absolute top-4 left-4 bg-green-500 text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">La Solución</span>
-                    </div>
-                    <div class="mt-6 text-center px-2">
-                        <p class="text-black dark:text-white font-bold transition-colors text-sm md:text-base">
-                            Tu "Cadenero" filtra la basura y solo te entrega compradores calificados.
-                        </p>
-                    </div>
+                <div class="mt-6 text-center px-2 w-full dynamic-text-container">
+                    <p id="carousel-dynamic-text" class="text-gray-800 dark:text-gray-400 font-medium transition-colors text-sm md:text-base opacity-100">
+                        Cargando información...
+                    </p>
                 </div>
-
             </div>
         </div>
     </section>
 
     <!-- ==========================================
-         BLOQUE 3: ACORDEONES (FUGAS)
+         SECCIÓN 3: ACORDEONES (PREGUNTAS/FUGAS)
          ========================================== -->
-    <section id="acordeones" class="py-16 px-6 relative z-10">
+    <section id="acordeones" class="py-8 md:py-12 px-6 relative z-10">
+        <!-- Se mantiene alineado y centrado debajo del Caos -->
         <div class="max-w-3xl mx-auto">
-            <div class="text-center mb-12">
+            <div class="text-center mb-8">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">¿Dónde se están fugando tus ventas hoy?</h2>
                 <p class="text-gray-800 dark:text-gray-400 font-medium max-w-2xl mx-auto transition-colors">Selecciona tu mayor reto:</p>
             </div>
@@ -581,7 +553,28 @@
     </section>
 
     <!-- ==========================================
-         BLOQUE 4: EL SISTEMA (Mapa Zig Zag)
+         SECCIÓN 4: EL ECOSISTEMA (LA SOLUCIÓN)
+         ========================================== -->
+    <section id="ecosistema" class="py-8 md:py-12 px-6 relative z-10">
+        <!-- Nuevo bloque único centrado -->
+        <div class="max-w-3xl mx-auto">
+            <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-xl border border-black/10 dark:border-white/10">
+                <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Ecosistema</h3>
+                <div class="w-full bg-gray-100 dark:bg-black rounded-2xl overflow-hidden relative aspect-square md:aspect-[4/3] border border-black/20 dark:border-white/20 flex items-center justify-center p-4">
+                    <img src="https://via.placeholder.com/600x600/000000/ffffff?text=Calendario+%2B+Stripe" alt="Ecosistema" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105">
+                    <span class="absolute top-4 left-4 bg-green-500 text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">La Solución</span>
+                </div>
+                <div class="mt-6 text-center px-2">
+                    <p class="text-black dark:text-white font-bold transition-colors text-sm md:text-base">
+                        Tu "Cadenero" filtra la basura y solo te entrega compradores calificados.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECCIÓN 5: EL SISTEMA (Mapa Zig Zag)
          ========================================== -->
     <section id="sistema" class="py-16 px-6 relative z-10">
         <div class="max-w-5xl mx-auto glass-panel p-8 md:p-16 rounded-3xl relative overflow-hidden shadow-2xl border border-black/5 dark:border-white/5">
@@ -644,7 +637,7 @@
     </section>
 
     <!-- ==========================================
-         BLOQUE 5: LEAD MAGNET
+         SECCIÓN 6: LEAD MAGNET
          ========================================== -->
     <section id="lead-magnet" class="py-20 px-6 relative z-10 border-t border-black/5 dark:border-white/5 transition-colors">
         <div class="max-w-3xl mx-auto text-center glass-panel p-8 md:p-14 rounded-[2rem] border border-black/10 dark:border-white/10 shadow-2xl">
@@ -679,7 +672,7 @@
         lucide.createIcons();
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // Theme Toggle (Botón Manual)
+        // Theme Toggle
         const themeToggleBtn = document.getElementById('theme-toggle');
         const iconSun = document.getElementById('icon-sun');
         const iconMoon = document.getElementById('icon-moon');
@@ -748,7 +741,6 @@
         // LÓGICA DEL CARRUSEL Y LIGHTBOX MODAL
         // ==========================================
         
-        // Nombres de archivos EXACTOS según los que subiste
         const carouselData = [
             {
                 src: 'caos-perfil-whatsapp.png',
@@ -769,7 +761,6 @@
         const dynamicText = document.getElementById('carousel-dynamic-text');
         const carouselContainer = document.getElementById('carousel-container');
         
-        // Elementos del Lightbox Modal
         const lightboxModal = document.getElementById('lightbox-modal');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
@@ -777,7 +768,6 @@
         let currentIndex = 0;
         let slideInterval;
 
-        // 1. Construir el carrusel
         carouselData.forEach((item, index) => {
             const slide = document.createElement('div');
             slide.className = 'carousel-slide';
@@ -794,7 +784,6 @@
             indicatorsContainer.appendChild(dot);
         });
 
-        // 2. Funciones de navegación del carrusel
         function goToSlide(index) {
             track.style.transform = `translateX(-${index * 100}%)`;
             
@@ -826,30 +815,25 @@
             startCarousel();
         }
 
-        // 3. Conexión del Lightbox (Toque para pantalla completa)
         carouselContainer.addEventListener('click', () => {
-            clearInterval(slideInterval); // Pausa la animación automática
-            lightboxImg.src = carouselData[currentIndex].src; // Coloca la imagen en el visor
-            lightboxModal.classList.add('active'); // Muestra la pantalla negra
+            clearInterval(slideInterval);
+            lightboxImg.src = carouselData[currentIndex].src; 
+            lightboxModal.classList.add('active'); 
         });
 
-        // Función para cerrar
         function closeLightbox() {
             lightboxModal.classList.remove('active');
-            startCarousel(); // Reanuda la animación automática
+            startCarousel(); 
         }
 
-        // Cerrar tocando la X
         lightboxCloseBtn.addEventListener('click', closeLightbox);
         
-        // Cerrar tocando el fondo oscuro
         lightboxModal.addEventListener('click', (e) => {
             if (e.target === lightboxModal) {
                 closeLightbox();
             }
         });
 
-        // Arrancar carrusel al cargar la página
         goToSlide(0);
         startCarousel();
 
