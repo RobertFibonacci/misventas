@@ -12,26 +12,22 @@
             darkMode: 'class',
         }
         
-        // Script inicial preventivo + Lógica de Horario Automático
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            const currentHour = new Date().getHours();
-            // Consideramos "Día" de 6:00 a 17:59 (6am a 6pm casi)
-            const isDayTime = currentHour >= 6 && currentHour < 18;
-
-            if (savedTheme === 'light') {
+        // Script preventivo para evitar el "Flasheo" de colores y automatizar horario
+        const savedTheme = localStorage.getItem('theme');
+        const horaActual = new Date().getHours();
+        
+        if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            // Lógica súper simple y limpia: de 6:00 a 17:59 es de día, el resto es noche.
+            if (horaActual >= 6 && horaActual < 18) {
                 document.documentElement.classList.remove('dark');
-            } else if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark');
             } else {
-                // Si no hay preferencia guardada, usamos la hora
-                if (isDayTime) {
-                    document.documentElement.classList.remove('dark');
-                } else {
-                    document.documentElement.classList.add('dark');
-                }
+                document.documentElement.classList.add('dark');
             }
-        })();
+        }
     </script>
     
     <!-- Google Fonts -->
@@ -47,7 +43,7 @@
             transition: background-color 0.5s ease, color 0.5s ease;
         }
         
-        /* Fondo base Día/Noche */
+        /* RESTAURADO A TU CÓDIGO ORIGINAL: Fondo base Día/Noche */
         html:not(.dark) body { background-color: #f9f9f9; color: #000000; }
         html.dark body { background-color: #000000; color: #ffffff; }
         
@@ -65,14 +61,14 @@
             z-index: -1;
         }
 
-        /* Glassmorphism Adaptable Día/Noche */
+        /* RESTAURADO A TU CÓDIGO ORIGINAL: Glassmorphism Adaptable Día/Noche */
         .glass-panel {
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.5s ease;
         }
         html:not(.dark) .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.03);
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
         html.dark .glass-panel {
@@ -185,7 +181,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            cursor: pointer; /* Indicar que es clickeable sin simular zoom interno */
+            cursor: pointer;
         }
         
         .carousel-track {
@@ -214,9 +210,8 @@
             background-color: #1e293b;
         }
 
-        /* Ligerísimo efecto visual al pasar el ratón para invitar al clic */
         .carousel-container:hover .carousel-img {
-            opacity: 0.85;
+            opacity: 0.85; 
         }
 
         /* Indicadores (puntitos) */
@@ -238,7 +233,7 @@
             background-color: rgba(255, 255, 255, 0.5);
             transition: background-color 0.3s ease;
             box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-            pointer-events: auto; /* Para que los puntitos se puedan clickear */
+            pointer-events: auto;
             cursor: pointer;
         }
 
@@ -256,7 +251,7 @@
         }
 
         /* =========================================
-           NUEVO: ESTILOS DEL LIGHTBOX (MODAL PANTALLA COMPLETA)
+           NUEVO: ESTILOS DEL LIGHTBOX (MODAL FULLSCREEN)
            ========================================= */
         #lightbox-modal {
             position: fixed;
@@ -264,8 +259,8 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(0, 0, 0, 0.95); /* Fondo casi negro completo */
-            z-index: 999999; /* Asegura estar por encima del menú sticky y todo lo demás */
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 999999; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -287,7 +282,7 @@
             box-shadow: 0 0 40px rgba(0,0,0,0.5);
             transform: scale(0.95);
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            /* ESTO PERMITE EL ZOOM NATIVO EN MÓVILES (PELLIZCAR) */
+            /* ESTO ACTIVA EL "PELLIZCO" PARA HACER ZOOM EN CELULARES */
             touch-action: pan-x pan-y pinch-zoom; 
         }
 
@@ -310,7 +305,7 @@
             cursor: pointer;
             backdrop-filter: blur(10px);
             transition: background 0.3s ease;
-            z-index: 2; /* Por encima de la imagen */
+            z-index: 2;
         }
 
         .lightbox-close:hover {
@@ -323,9 +318,7 @@
     <!-- FONDOS -->
     <canvas id="star-canvas"></canvas>
 
-    <!-- =========================================
-         NUEVO: CAPA INVISIBLE DEL LIGHTBOX
-         ========================================= -->
+    <!-- EL MODAL INVISIBLE PARA ABRIR LAS FOTOS EN GRANDE -->
     <div id="lightbox-modal">
         <div class="lightbox-close" id="lightbox-close-btn">
             <i data-lucide="x" class="w-6 h-6"></i>
@@ -386,7 +379,6 @@
                     <div class="relative z-10">
                         <div class="flex items-center gap-4 mb-4">
                             <div class="w-[68px] h-[68px] rounded-full overflow-hidden bg-gray-200 dark:bg-black flex-shrink-0 border border-black/10 dark:border-white/10">
-                                <!-- Imagen de perfil.png intacta -->
                                 <img src="perfil.png" alt="Roberto Fibonacci" class="w-full h-full object-cover">
                             </div>
                             <div class="flex flex-col justify-center">
@@ -465,31 +457,25 @@
                     
                     <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Caos</h3>
                     
-                    <!-- Contenedor del Carrusel -->
                     <div class="w-full bg-white dark:bg-[#111] rounded-2xl overflow-hidden relative aspect-square md:aspect-[4/3] border border-black/10 dark:border-white/10" id="caos-carousel-wrapper">
                         
-                        <!-- Icono decorativo para indicar interacción (Expandir) -->
                         <div class="absolute top-4 right-4 z-20 bg-black/50 text-white p-2 rounded-full backdrop-blur-sm pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity">
-                            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                            <i data-lucide="zoom-in" class="w-4 h-4"></i>
                         </div>
 
-                        <!-- Etiqueta de la trampa -->
                         <span class="absolute top-4 left-4 z-20 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">La Trampa</span>
 
-                        <!-- Pista deslizante (Track) -->
                         <div class="carousel-container" id="carousel-container">
                             <div class="carousel-track" id="carousel-track">
-                                <!-- Las imágenes se inyectan vía JS -->
+                                <!-- Inyectado vía JS -->
                             </div>
                         </div>
 
-                        <!-- Indicadores de página -->
                         <div class="carousel-indicators" id="carousel-indicators">
-                            <!-- Los dots se inyectan vía JS -->
+                            <!-- Inyectado vía JS -->
                         </div>
                     </div>
 
-                    <!-- Encabezado / Texto Dinámico que cambia con el carrusel -->
                     <div class="mt-6 text-center px-2 w-full dynamic-text-container">
                         <p id="carousel-dynamic-text" class="text-gray-800 dark:text-gray-400 font-medium transition-colors text-sm md:text-base opacity-100">
                             Cargando información...
@@ -688,7 +674,7 @@
         lucide.createIcons();
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // Theme Toggle
+        // Theme Toggle (Botón Manual)
         const themeToggleBtn = document.getElementById('theme-toggle');
         const iconSun = document.getElementById('icon-sun');
         const iconMoon = document.getElementById('icon-moon');
@@ -757,7 +743,7 @@
         // LÓGICA DEL CARRUSEL Y LIGHTBOX MODAL
         // ==========================================
         
-        // Nombres de archivos solicitados
+        // Nombres de archivos EXACTOS según los que subiste
         const carouselData = [
             {
                 src: '1000315674.png',
@@ -851,7 +837,7 @@
         // Cerrar tocando la X
         lightboxCloseBtn.addEventListener('click', closeLightbox);
         
-        // Cerrar tocando el fondo oscuro (pero no la imagen en sí, si es que se pellizca)
+        // Cerrar tocando el fondo oscuro
         lightboxModal.addEventListener('click', (e) => {
             if (e.target === lightboxModal) {
                 closeLightbox();
