@@ -361,22 +361,11 @@
                 </button>
             </div>
 
-            <!-- Derecha: Iconos y Menú -->
-            <div class="w-1/3 flex justify-end items-center gap-4 md:gap-8">
-                <div class="hidden md:flex space-x-8 text-sm tracking-wide text-gray-500 dark:text-gray-400">
-                    <a href="#prueba-social" class="hover:text-black dark:hover:text-white transition-colors">Realidad</a>
-                    <a href="#acordeones" class="hover:text-black dark:hover:text-white transition-colors">Fugas</a>
-                    <a href="#lead-magnet" class="font-semibold text-black dark:text-white hover:opacity-70 transition-opacity">Diagnóstico</a>
-                </div>
-                
-                <!-- Botón Día / Noche -->
+            <!-- Derecha: Botón Día / Noche -->
+            <div class="w-1/3 flex justify-end items-center">
                 <button id="theme-toggle" class="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors outline-none flex-shrink-0" title="Cambiar Tema">
                     <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
                     <i data-lucide="moon" id="icon-moon" class="w-5 h-5 hidden"></i>
-                </button>
-
-                <button class="md:hidden text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white flex-shrink-0">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
             </div>
 
@@ -652,26 +641,18 @@
     </section>
 
     <!-- ==========================================
-         SECCIÓN 6: LEAD MAGNET
+         SECCIÓN 6: LEAD MAGNET (BOTÓN WHATSAPP)
          ========================================== -->
     <section id="lead-magnet" class="py-20 px-6 relative z-10 border-t border-black/5 dark:border-white/5 transition-colors">
         <div class="max-w-3xl mx-auto text-center glass-panel p-8 md:p-14 rounded-[2rem] border border-black/10 dark:border-white/10 shadow-2xl">
             <i data-lucide="calculator" class="w-12 h-12 mx-auto mb-6 text-black dark:text-white transition-colors"></i>
             <h2 class="text-3xl md:text-5xl font-extrabold mb-6 text-black dark:text-white transition-colors leading-tight">Calculadora de Fugas en Ventas</h2>
-            <p class="text-gray-800 dark:text-gray-400 font-medium text-base md:text-lg mb-10 max-w-xl mx-auto transition-colors leading-relaxed">Descubre el monto exacto que tu empresa pierde cada mes. En menos de 5 minutos tendrás tu diagnóstico.</p>
-            <form action="#" method="POST" class="flex flex-col gap-5 max-w-md mx-auto text-left">
-                <div>
-                    <label for="name" class="block text-sm font-semibold text-black dark:text-white mb-2 ml-1">Tu Nombre</label>
-                    <input type="text" id="name" name="name" required placeholder="Ej. Roberto" class="w-full px-5 py-4 rounded-xl bg-white/50 dark:bg-black/50 border border-black/20 dark:border-white/20 text-black dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all shadow-inner">
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-semibold text-black dark:text-white mb-2 ml-1">Correo Electrónico</label>
-                    <input type="email" id="email" name="email" required placeholder="ceo@tuempresa.com" class="w-full px-5 py-4 rounded-xl bg-white/50 dark:bg-black/50 border border-black/20 dark:border-white/20 text-black dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all shadow-inner">
-                </div>
-                <button type="submit" class="mt-4 w-full bg-black text-white dark:bg-white dark:text-black font-extrabold py-4 px-8 rounded-full text-lg shadow-xl dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-transform duration-300 flex justify-center items-center gap-2">
-                    REVELAR MIS FUGAS <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                </button>
-            </form>
+            <p class="text-gray-800 dark:text-gray-400 font-medium text-base md:text-lg mb-8 max-w-xl mx-auto transition-colors leading-relaxed">Descubre el monto exacto que tu empresa pierde cada mes. En menos de 5 minutos tendrás tu diagnóstico.</p>
+            
+            <a href="https://wa.me/524425480329?text=Hola%20Roberto,%20quiero%20revelar%20mis%20fugas%20en%20ventas" target="_blank" class="mt-8 w-full max-w-sm mx-auto bg-black text-white dark:bg-white dark:text-black font-extrabold py-5 px-8 rounded-full text-sm md:text-lg shadow-xl dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:scale-[1.02] transition-transform duration-300 flex justify-center items-center gap-3">
+                <i data-lucide="message-circle" class="w-6 h-6"></i>
+                REVELAR MIS FUGAS
+            </a>
         </div>
     </section>
 
@@ -756,18 +737,17 @@
         // LÓGICA DEL CARRUSEL Y LIGHTBOX MODAL
         // ==========================================
         
-        // Nombres de archivos EXACTOS según los que subiste
         const carouselData = [
             {
-                src: 'caos-perfil-whatsapp.png',
+                src: '1000315674.png',
                 text: 'Perfil de negocio inactivo o mal configurado que ahuyenta ventas.'
             },
             {
-                src: 'caos-ciclo-ventas.png',
+                src: '1000315680.png',
                 text: 'El ciclo caótico: pérdida de tiempo por falta de procedimientos.'
             },
             {
-                src: 'caos-asesinos-conversion.png',
+                src: '1000315808.png',
                 text: 'Los 3 asesinos de la conversión: improvisación, caos y rendición.'
             }
         ];
@@ -777,7 +757,6 @@
         const dynamicText = document.getElementById('carousel-dynamic-text');
         const carouselContainer = document.getElementById('carousel-container');
         
-        // Elementos del Lightbox Modal
         const lightboxModal = document.getElementById('lightbox-modal');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
@@ -785,7 +764,6 @@
         let currentIndex = 0;
         let slideInterval;
 
-        // 1. Construir el carrusel
         carouselData.forEach((item, index) => {
             const slide = document.createElement('div');
             slide.className = 'carousel-slide';
@@ -802,7 +780,6 @@
             indicatorsContainer.appendChild(dot);
         });
 
-        // 2. Funciones de navegación del carrusel
         function goToSlide(index) {
             track.style.transform = `translateX(-${index * 100}%)`;
             
@@ -834,30 +811,25 @@
             startCarousel();
         }
 
-        // 3. Conexión del Lightbox (Toque para pantalla completa)
         carouselContainer.addEventListener('click', () => {
-            clearInterval(slideInterval); // Pausa la animación automática
-            lightboxImg.src = carouselData[currentIndex].src; // Coloca la imagen en el visor
-            lightboxModal.classList.add('active'); // Muestra la pantalla negra
+            clearInterval(slideInterval);
+            lightboxImg.src = carouselData[currentIndex].src; 
+            lightboxModal.classList.add('active'); 
         });
 
-        // Función para cerrar
         function closeLightbox() {
             lightboxModal.classList.remove('active');
-            startCarousel(); // Reanuda la animación automática
+            startCarousel(); 
         }
 
-        // Cerrar tocando la X
         lightboxCloseBtn.addEventListener('click', closeLightbox);
         
-        // Cerrar tocando el fondo oscuro
         lightboxModal.addEventListener('click', (e) => {
             if (e.target === lightboxModal) {
                 closeLightbox();
             }
         });
 
-        // Arrancar carrusel al cargar la página
         goToSlide(0);
         startCarousel();
 
@@ -961,12 +933,6 @@
         
         window.onload = initCanvas;
 
-        // Formulario
-        const form = document.querySelector('form');
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('¡Gracias! Redirigiendo a la Calculadora...');
-        });
     </script>
 </body>
 </html>
