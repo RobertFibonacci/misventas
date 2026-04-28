@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistemas de Venta Estratégicos | High Ticket</title>
     
+    <!-- ==========================================
+         NUEVO: ETIQUETAS PARA REDES SOCIALES (OPEN GRAPH)
+         ========================================== -->
+    <meta property="og:title" content="Sistemas de Venta Estratégicos | Roberto Fibonacci">
+    <meta property="og:description" content="Deja de rogar por ventas y empieza a cerrar. Estandarizamos tu mensaje y filtramos curiosos con IA.">
+    <meta property="og:image" content="portada-redes.png">
+    <meta property="og:url" content="https://misventas.robertofibonacci.com.mx">
+    <meta property="og:type" content="website">
+    
+    <!-- Etiquetas compatibles con Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sistemas de Venta Estratégicos | Roberto Fibonacci">
+    <meta name="twitter:description" content="Deja de rogar por ventas y empieza a cerrar. Estandarizamos tu mensaje y filtramos curiosos con IA.">
+    <meta name="twitter:image" content="portada-redes.png">
+    
     <!-- Tailwind CSS con soporte para Dark Mode manual -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -325,10 +340,11 @@
         <img src="" alt="Vista ampliada" id="lightbox-img">
     </div>
 
-    <!-- ENCABEZADO STICKY COMPLETO -->
+    <!-- ENCABEZADO STICKY COMPLETO (Todo en 1 sola línea) -->
     <header class="sticky top-0 z-50 w-full transition-all duration-500 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-black/10 dark:border-white/10">
         
         <div class="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between w-full">
+            
             <!-- Izquierda: Logo RF. -->
             <div class="w-1/3 flex justify-start items-center">
                 <a href="#" class="text-xl font-bold tracking-widest uppercase font-sans text-gray-800 dark:text-gray-200 hover:text-black dark:hover:text-white transition-colors">RF.</a>
@@ -353,6 +369,7 @@
                     <a href="#lead-magnet" class="font-semibold text-black dark:text-white hover:opacity-70 transition-opacity">Diagnóstico</a>
                 </div>
                 
+                <!-- Botón Día / Noche -->
                 <button id="theme-toggle" class="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors outline-none flex-shrink-0" title="Cambiar Tema">
                     <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
                     <i data-lucide="moon" id="icon-moon" class="w-5 h-5 hidden"></i>
@@ -362,6 +379,7 @@
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
             </div>
+
         </div>
 
         <!-- Panel de Contenido Expandible -->
@@ -423,7 +441,7 @@
         <div class="max-w-6xl mx-auto px-6 w-full">
             <div class="max-w-4xl text-left">
                 <h1 class="text-4xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight text-black dark:text-white transition-colors">
-                    ¿Cuántas horas y miles de pesos perdiste esta semana atendiendo a prospectos que nunca tuvieron la intención de comprarte?
+                    ¿Cuántas horas perdiste esta semana atendiendo a prospectos que nunca tuvieron la intención de comprarte?
                 </h1>
                 <p class="text-[15px] md:text-lg text-gray-800 dark:text-gray-400 font-medium max-w-3xl leading-relaxed mb-6 md:mb-8 border-l-2 border-black/20 dark:border-white/20 pl-4 transition-colors">
                     Atender a todo el que te escribe no es "dar buen servicio", es un suicidio comercial que agota a tu equipo y espanta a tus clientes de alto valor. Nosotros blindamos tu proceso: auditamos por qué se caen tus tratos, colocamos un filtro automático de inteligencia artificial para descalificar curiosos y diseñamos tus textos de seguimiento.
@@ -441,7 +459,6 @@
          SECCIÓN 2: EL CAOS (CARRUSEL)
          ========================================== -->
     <section id="prueba-social" class="py-8 md:py-12 px-6 relative z-10">
-        <!-- Contenedor único centrado (Ya no hay grid/columnas) -->
         <div class="max-w-3xl mx-auto">
             <div class="text-center mb-8">
                 <h2 class="text-3xl md:text-4xl font-bold mb-2 text-black dark:text-white transition-colors">Elige tu realidad comercial:</h2>
@@ -481,7 +498,6 @@
          SECCIÓN 3: ACORDEONES (PREGUNTAS/FUGAS)
          ========================================== -->
     <section id="acordeones" class="py-8 md:py-12 px-6 relative z-10">
-        <!-- Se mantiene alineado y centrado debajo del Caos -->
         <div class="max-w-3xl mx-auto">
             <div class="text-center mb-8">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">¿Dónde se están fugando tus ventas hoy?</h2>
@@ -556,7 +572,6 @@
          SECCIÓN 4: EL ECOSISTEMA (LA SOLUCIÓN)
          ========================================== -->
     <section id="ecosistema" class="py-8 md:py-12 px-6 relative z-10">
-        <!-- Nuevo bloque único centrado -->
         <div class="max-w-3xl mx-auto">
             <div class="glass-panel p-6 rounded-3xl flex flex-col items-center group shadow-xl border border-black/10 dark:border-white/10">
                 <h3 class="text-2xl font-black text-black dark:text-white mb-4 transition-colors w-full text-center">El Ecosistema</h3>
@@ -672,7 +687,7 @@
         lucide.createIcons();
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // Theme Toggle
+        // Theme Toggle (Botón Manual)
         const themeToggleBtn = document.getElementById('theme-toggle');
         const iconSun = document.getElementById('icon-sun');
         const iconMoon = document.getElementById('icon-moon');
@@ -743,15 +758,15 @@
         
         const carouselData = [
             {
-                src: 'caos-perfil-whatsapp.png',
+                src: '1000315674.png',
                 text: 'Perfil de negocio inactivo o mal configurado que ahuyenta ventas.'
             },
             {
-                src: 'caos-ciclo-ventas.png',
+                src: '1000315680.png',
                 text: 'El ciclo caótico: pérdida de tiempo por falta de procedimientos.'
             },
             {
-                src: 'caos-asesinos-conversion.png',
+                src: '1000315808.png',
                 text: 'Los 3 asesinos de la conversión: improvisación, caos y rendición.'
             }
         ];
