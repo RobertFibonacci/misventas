@@ -756,17 +756,18 @@
         // LÓGICA DEL CARRUSEL Y LIGHTBOX MODAL
         // ==========================================
         
+        // Nombres de archivos EXACTOS según los que subiste
         const carouselData = [
             {
-                src: '1000315674.png',
+                src: 'caos-perfil-whatsapp.png',
                 text: 'Perfil de negocio inactivo o mal configurado que ahuyenta ventas.'
             },
             {
-                src: '1000315680.png',
+                src: 'caos-ciclo-ventas.png',
                 text: 'El ciclo caótico: pérdida de tiempo por falta de procedimientos.'
             },
             {
-                src: '1000315808.png',
+                src: 'caos-asesinos-conversion.png',
                 text: 'Los 3 asesinos de la conversión: improvisación, caos y rendición.'
             }
         ];
@@ -776,6 +777,7 @@
         const dynamicText = document.getElementById('carousel-dynamic-text');
         const carouselContainer = document.getElementById('carousel-container');
         
+        // Elementos del Lightbox Modal
         const lightboxModal = document.getElementById('lightbox-modal');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
@@ -783,6 +785,7 @@
         let currentIndex = 0;
         let slideInterval;
 
+        // 1. Construir el carrusel
         carouselData.forEach((item, index) => {
             const slide = document.createElement('div');
             slide.className = 'carousel-slide';
@@ -799,6 +802,7 @@
             indicatorsContainer.appendChild(dot);
         });
 
+        // 2. Funciones de navegación del carrusel
         function goToSlide(index) {
             track.style.transform = `translateX(-${index * 100}%)`;
             
@@ -830,25 +834,30 @@
             startCarousel();
         }
 
+        // 3. Conexión del Lightbox (Toque para pantalla completa)
         carouselContainer.addEventListener('click', () => {
-            clearInterval(slideInterval);
-            lightboxImg.src = carouselData[currentIndex].src; 
-            lightboxModal.classList.add('active'); 
+            clearInterval(slideInterval); // Pausa la animación automática
+            lightboxImg.src = carouselData[currentIndex].src; // Coloca la imagen en el visor
+            lightboxModal.classList.add('active'); // Muestra la pantalla negra
         });
 
+        // Función para cerrar
         function closeLightbox() {
             lightboxModal.classList.remove('active');
-            startCarousel(); 
+            startCarousel(); // Reanuda la animación automática
         }
 
+        // Cerrar tocando la X
         lightboxCloseBtn.addEventListener('click', closeLightbox);
         
+        // Cerrar tocando el fondo oscuro
         lightboxModal.addEventListener('click', (e) => {
             if (e.target === lightboxModal) {
                 closeLightbox();
             }
         });
 
+        // Arrancar carrusel al cargar la página
         goToSlide(0);
         startCarousel();
 
